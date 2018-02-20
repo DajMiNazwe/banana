@@ -18,5 +18,5 @@ public class AccountEntity {
 
     private String ownerId;
 
-    private Long balance;
+    private Double balance;
 }

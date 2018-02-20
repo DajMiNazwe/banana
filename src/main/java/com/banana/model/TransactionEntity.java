@@ -23,7 +23,7 @@ public class TransactionEntity {
 
     private TransactionType type;
 
-    private Long value;
+    private Double value;
 
     private Instant operationDate;
 

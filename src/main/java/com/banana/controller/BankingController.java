@@ -5,6 +5,7 @@ import com.banana.model.IncreaseRequest;
 import com.banana.model.TransactionDTO;
 import com.banana.service.BankingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class BankingController {
     }
 
     @GetMapping(BALANCE_USER)
-    public Long getBalance(@PathVariable String userId) {
+    public Double getBalance(@PathVariable String userId) {
         return bankingService.getBalance(userId);
     }
 
@@ -32,12 +33,12 @@ public class BankingController {
     }
 
     @PostMapping(BALANCE_USER_INCREASE)
-    public void increaseFunds(@RequestBody IncreaseRequest request, @PathVariable String userId) {
+    public void increaseFunds(@Validated @RequestBody IncreaseRequest request, @PathVariable String userId) {
         bankingService.increaseFunds(request.getValue(), userId);
     }
 
     @PostMapping(BALANCE_USER_DECREASE)
-    public void decreaseFunds(@RequestBody DecreaseRequest request, @PathVariable String userId) {
+    public void decreaseFunds(@Validated @RequestBody DecreaseRequest request, @PathVariable String userId) {
         bankingService.decreaseFunds(request, userId);
     }
 }

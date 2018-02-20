@@ -4,6 +4,7 @@ import com.banana.model.AccountEntity;
 import com.banana.model.DecreaseRequest;
 import com.banana.model.TransactionDTO;
 import com.banana.model.TransactionEntity;
+import com.banana.model.TransactionEntity.TransactionType;
 import com.banana.repository.AccountRepository;
 import com.banana.repository.TransactionRepository;
 import com.banana.shared.AccountNotFoundException;
@@ -40,7 +41,7 @@ public class BankingService {
         this.transactionMapper = transactionMapper;
     }
 
-    public Long getBalance(String id) {
+    public Double getBalance(String id) {
         Optional<AccountEntity> account = accountRepository.findOneByOwnerId(id);
         if (account.isPresent()) {
             return account.get().getBalance();
@@ -54,16 +55,10 @@ public class BankingService {
     }
 
     @Transactional
-    public void increaseFunds(Long value, String id) {
+    public void increaseFunds(Double value, String id) {
         Optional<AccountEntity> optionalAccount = accountRepository.findOneByOwnerId(id);
         AccountEntity account = optionalAccount.orElseGet(() -> createNewAccount(id));
-
-        TransactionEntity transaction = new TransactionEntity();
-        transaction.setOwnerId(id);
-        transaction.setType(TransactionEntity.TransactionType.INCREASE);
-        transaction.setValue(value);
-        transaction.setOperationDate(Instant.now());
-        transactionRepository.save(transaction);
+        addNewTransaction(TransactionType.INCREASE, id, value);
         account.setBalance(account.getBalance() + value);
         accountRepository.save(account);
     }
@@ -75,13 +70,7 @@ public class BankingService {
         }
         Optional<AccountEntity> optionalAccount = accountRepository.findOneByOwnerId(id);
         AccountEntity account = optionalAccount.orElseThrow(() -> new AccountNotFoundException(id));
-
-        TransactionEntity transaction = new TransactionEntity();
-        transaction.setOwnerId(id);
-        transaction.setType(TransactionEntity.TransactionType.DECREASE);
-        transaction.setValue(request.getValue());
-        transaction.setOperationDate(Instant.now());
-        transactionRepository.save(transaction);
+        addNewTransaction(TransactionType.DECREASE, id, request.getValue());
         account.setBalance(account.getBalance() - request.getValue());
         accountRepository.save(account);
     }
@@ -89,7 +78,16 @@ public class BankingService {
     private AccountEntity createNewAccount(String id) {
         AccountEntity account = new AccountEntity();
         account.setOwnerId(id);
-        account.setBalance(0L);
+        account.setBalance(0.00);
         return accountRepository.save(account);
+    }
+
+    private void addNewTransaction(TransactionType type, String ownerId, Double value) {
+        TransactionEntity transaction = new TransactionEntity();
+        transaction.setOwnerId(ownerId);
+        transaction.setType(type);
+        transaction.setValue(value);
+        transaction.setOperationDate(Instant.now());
+        transactionRepository.save(transaction);
     }
 }

@@ -11,5 +11,5 @@ public class TransactionDTO {
 
     private TransactionEntity.TransactionType type;
 
-    private Long value;
+    private Double value;
 }
