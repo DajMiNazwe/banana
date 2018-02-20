@@ -2,7 +2,7 @@ package com.banana.controller;
 
 import com.banana.model.DecreaseRequest;
 import com.banana.model.IncreaseRequest;
-import com.banana.model.TransactionEntity;
+import com.banana.model.TransactionDTO;
 import com.banana.service.BankingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ public class BankingController {
     }
 
     @GetMapping(HISTORY_USER)
-    public List<TransactionEntity> getTransactionHistory(@PathVariable String userId) {
+    public List<TransactionDTO> getTransactionHistory(@PathVariable String userId) {
         return bankingService.getTransactionHistory(userId);
     }
 
