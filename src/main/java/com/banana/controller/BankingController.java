@@ -2,31 +2,42 @@ package com.banana.controller;
 
 import com.banana.model.DecreaseRequest;
 import com.banana.model.IncreaseRequest;
-import com.banana.model.TransactionHistory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.banana.model.TransactionEntity;
+import com.banana.service.BankingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static com.banana.mapping.BankingUrlMapping.*;
 
 @RestController
 public class BankingController {
 
-    @GetMapping
-    public String getBalance() {
-        return " ";
+    private final BankingService bankingService;
+
+    @Autowired
+    public BankingController(BankingService bankingService) {
+        this.bankingService = bankingService;
     }
 
-    @GetMapping
-    public TransactionHistory getTransactionHistory() {
-        return new TransactionHistory();
+    @GetMapping(BALANCE_USER)
+    public Long getBalance(@PathVariable String userId) {
+        return bankingService.getBalance(userId);
     }
 
-    @PostMapping
-    public void increaseFunds(IncreaseRequest request) {
-
+    @GetMapping(HISTORY_USER)
+    public List<TransactionEntity> getTransactionHistory(@PathVariable String userId) {
+        return bankingService.getTransactionHistory(userId);
     }
 
-    @PostMapping
-    public void decreaseFunds(DecreaseRequest request) {
+    @PostMapping(BALANCE_USER_INCREASE)
+    public void increaseFunds(@RequestBody IncreaseRequest request, @PathVariable String userId) {
+        bankingService.increaseFunds(request.getValue(), userId);
+    }
 
+    @PostMapping(BALANCE_USER_DECREASE)
+    public void decreaseFunds(@RequestBody DecreaseRequest request, @PathVariable String userId) {
+        bankingService.decreaseFunds(request.getValue(), userId);
     }
 }
