@@ -1,0 +1,6 @@
+server:
+  port: 8080
+
+bananaapi:
+  oneTimeTokenLength: 3
+  oneTimeTokenValiditySeconds: 30

@@ -1,5 +1,6 @@
 package com.banana.service;
 
+import com.banana.ApplicationSettings;
 import com.banana.model.Token;
 import com.banana.repository.TokenRepository;
 import com.banana.shared.InvalidTokenException;
@@ -14,17 +15,20 @@ import java.util.Optional;
 @Service
 public class TokenService {
 
+    private final ApplicationSettings settings;
+
     private final TokenRepository tokenRepository;
 
     @Autowired
-    public TokenService(TokenRepository tokenRepository) {
+    public TokenService(ApplicationSettings settings, TokenRepository tokenRepository) {
+        this.settings = settings;
         this.tokenRepository = tokenRepository;
     }
 
     public Token generateToken(String userId) {
         Token token = new Token();
         token.setUserId(userId);
-        token.setToken(RandomStringUtils.randomAlphabetic(3).toUpperCase());
+        token.setToken(RandomStringUtils.randomAlphabetic(settings.getOneTimeTokenLength()).toUpperCase());
         return tokenRepository.save(token);
     }
 
@@ -41,6 +45,6 @@ public class TokenService {
 
     private boolean isTimeValid(Instant tokenTime) {
         Duration duration = Duration.between(tokenTime, Instant.now());
-        return duration.getSeconds() <= 30;
+        return duration.getSeconds() <= settings.getOneTimeTokenValiditySeconds();
     }
 }
