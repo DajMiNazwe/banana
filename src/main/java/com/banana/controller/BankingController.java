@@ -38,6 +38,6 @@ public class BankingController {
 
     @PostMapping(BALANCE_USER_DECREASE)
     public void decreaseFunds(@RequestBody DecreaseRequest request, @PathVariable String userId) {
-        bankingService.decreaseFunds(request.getValue(), userId);
+        bankingService.decreaseFunds(request, userId);
     }
 }

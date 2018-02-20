@@ -7,5 +7,5 @@ public class DecreaseRequest {
 
     private Long value;
 
-    private Token token;
+    private String token;
 }

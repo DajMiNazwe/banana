@@ -1,10 +1,12 @@
 package com.banana.service;
 
 import com.banana.model.AccountEntity;
+import com.banana.model.DecreaseRequest;
 import com.banana.model.TransactionEntity;
 import com.banana.repository.AccountRepository;
 import com.banana.repository.TransactionRepository;
 import com.banana.shared.AccountNotFoundException;
+import com.banana.shared.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +22,13 @@ public class BankingService {
 
     private final AccountRepository accountRepository;
 
+    private final TokenService tokenService;
+
     @Autowired
-    public BankingService(TransactionRepository transactionRepository, AccountRepository accountRepository) {
+    public BankingService(TransactionRepository transactionRepository, AccountRepository accountRepository, TokenService tokenService) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
+        this.tokenService = tokenService;
     }
 
     public Long getBalance(String id) {
@@ -53,16 +58,19 @@ public class BankingService {
         accountRepository.save(account);
     }
 
-    public void decreaseFunds(Long value, String id) {
+    public void decreaseFunds(DecreaseRequest request, String id) {
+        if (!tokenService.isTokenValid(request.getToken(), id)) {
+            throw new InvalidTokenException(request.getToken());
+        }
         Optional<AccountEntity> optionalAccount = accountRepository.findOneByOwnerId(id);
         AccountEntity account = optionalAccount.orElseThrow(() -> new AccountNotFoundException(id));
 
         TransactionEntity transaction = new TransactionEntity();
         transaction.setOwnerId(id);
         transaction.setType(TransactionEntity.TransactionType.DECREASE);
-        transaction.setValue(value);
+        transaction.setValue(request.getValue());
         transaction.setOperationDate(Instant.now());
-        account.setBalance(account.getBalance() - value);
+        account.setBalance(account.getBalance() - request.getValue());
         accountRepository.save(account);
     }
 
