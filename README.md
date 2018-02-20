@@ -1,7 +1,7 @@
 # Banana Best Bank App
 Banana Best Bank application for secure transactions. - Java Assignment.
 
-1. Easiest way to run the App:
+1. The easiest way to run the App:
 
     a) `git clone https://github.com/DajMiNazwe/holiday.git`
     
@@ -23,7 +23,7 @@ Banana Best Bank application for secure transactions. - Java Assignment.
     
     a) Opening the Account.
     
-    At first there is nothing inside our "database" and the only way to open new account is to deposit some value to
+    At first, there is nothing inside our "database" and the only way to open new account is to deposit some value to
     Banana Best Bank. After it's done there will be an account opened for ID that you provided. 
     
     b) Generating One Time Token.
