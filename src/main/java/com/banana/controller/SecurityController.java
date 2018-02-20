@@ -1,6 +1,6 @@
 package com.banana.controller;
 
-import com.banana.model.Token;
+import com.banana.model.TokenResponse;
 import com.banana.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +20,7 @@ public class SecurityController {
     }
 
     @PostMapping(TOKEN_USER)
-    public Token getToken(@PathVariable String userId) {
+    public TokenResponse getToken(@PathVariable String userId) {
         return tokenService.generateToken(userId);
     }
 }

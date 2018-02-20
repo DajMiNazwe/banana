@@ -11,7 +11,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-public class Token {
+public class TokenEntity {
 
     @Id
     @GeneratedValue

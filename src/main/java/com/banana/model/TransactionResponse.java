@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class TransactionDTO {
+public class TransactionResponse {
 
     private TransactionEntity.TransactionType type;
 

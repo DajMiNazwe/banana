@@ -1,7 +1,8 @@
 package com.banana.service;
 
 import com.banana.ApplicationSettings;
-import com.banana.model.Token;
+import com.banana.model.TokenEntity;
+import com.banana.model.TokenResponse;
 import com.banana.repository.TokenRepository;
 import com.banana.shared.InvalidTokenException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -25,22 +26,23 @@ public class TokenService {
         this.tokenRepository = tokenRepository;
     }
 
-    public Token generateToken(String userId) {
-        Token token = new Token();
-        token.setUserId(userId);
-        token.setToken(RandomStringUtils.randomAlphabetic(settings.getOneTimeTokenLength()).toUpperCase());
-        return tokenRepository.save(token);
+    public TokenResponse generateToken(String userId) {
+        TokenEntity tokenEntity = new TokenEntity();
+        tokenEntity.setUserId(userId);
+        tokenEntity.setToken(RandomStringUtils.randomAlphabetic(settings.getOneTimeTokenLength()).toUpperCase());
+        tokenRepository.save(tokenEntity);
+        return new TokenResponse(tokenEntity.getToken());
     }
 
     boolean isTokenValid(String token, String id) {
-        Optional<Token> optionalToken = tokenRepository.findOneByToken(token);
-        Token tokenFromMemory;
+        Optional<TokenEntity> optionalToken = tokenRepository.findOneByToken(token);
+        TokenEntity tokenEntityFromMemory;
         if (optionalToken.isPresent()) {
-            tokenFromMemory = optionalToken.get();
+            tokenEntityFromMemory = optionalToken.get();
         } else {
             throw new InvalidTokenException(token);
         }
-        return tokenFromMemory.getUserId().equals(id) && isTimeValid(tokenFromMemory.getCreationTime());
+        return tokenEntityFromMemory.getUserId().equals(id) && isTimeValid(tokenEntityFromMemory.getCreationTime());
     }
 
     private boolean isTimeValid(Instant tokenTime) {

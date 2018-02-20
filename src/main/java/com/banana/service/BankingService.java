@@ -2,9 +2,9 @@ package com.banana.service;
 
 import com.banana.model.AccountEntity;
 import com.banana.model.DecreaseRequest;
-import com.banana.model.TransactionDTO;
 import com.banana.model.TransactionEntity;
 import com.banana.model.TransactionEntity.TransactionType;
+import com.banana.model.TransactionResponse;
 import com.banana.repository.AccountRepository;
 import com.banana.repository.TransactionRepository;
 import com.banana.shared.AccountNotFoundException;
@@ -50,7 +50,7 @@ public class BankingService {
         }
     }
 
-    public List<TransactionDTO> getTransactionHistory(String id) {
+    public List<TransactionResponse> getTransactionHistory(String id) {
         return transactionRepository.findAllByOwnerId(id).stream().map(transactionMapper::map).collect(Collectors.toList());
     }
 
